@@ -1,5 +1,5 @@
-import app from "./app";
 import loadConfig from "./config";
+import app from "./app";
 
 const config = loadConfig();
 
