@@ -3,6 +3,7 @@ import { PrismaClient } from "@prisma/client";
 import morgan from "morgan";
 import bodyParser from "body-parser";
 import setUpAuthRoutes from "./auth/auth.router";
+import setUpPostRoutes from "./posts/post.router";
 
 const app = express();
 const prisma = new PrismaClient();
@@ -11,6 +12,7 @@ app.use(morgan("dev"));
 app.use(bodyParser.json());
 
 app.use("/v1/auth", setUpAuthRoutes(app, prisma));
+app.use("/v1/posts", setUpPostRoutes(prisma));
 
 app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
   console.error(err.stack);

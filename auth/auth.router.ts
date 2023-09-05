@@ -3,11 +3,13 @@ import { AuthController } from "./auth.controller";
 import { AuthService } from "./auth.service";
 import { UserService } from "../users/user.service";
 import { UserRepository } from "../users/user.repository";
-import { validateSignUpRequest, validateLogInRequest } from "./middlewares";
 import { PrismaClient } from "@prisma/client";
 import { Express } from "express";
 import passport from "passport";
 import { Strategy, ExtractJwt } from "passport-jwt";
+import { validateSchema } from "../utils/validator/validate";
+import { loginSchema } from "./schema/login.schema";
+import { signUpSchema } from "./schema/sign-up.schema";
 
 export default (app: Express, prisma: PrismaClient) => {
   const router = Router();
@@ -20,7 +22,7 @@ export default (app: Express, prisma: PrismaClient) => {
   configurePassport(passport, userService);
   app.use(passport.initialize());
 
-  router.post("/login", validateLogInRequest, async (req, res, next) => {
+  router.post("/login", validateSchema(loginSchema), async (req, res, next) => {
     try {
       await authController.login(req, res);
     } catch (err) {
@@ -28,13 +30,17 @@ export default (app: Express, prisma: PrismaClient) => {
     }
   });
 
-  router.post("/signup", validateSignUpRequest, async (req, res, next) => {
-    try {
-      await authController.signUp(req, res);
-    } catch (err) {
-      next(err);
+  router.post(
+    "/signup",
+    validateSchema(signUpSchema),
+    async (req, res, next) => {
+      try {
+        await authController.signUp(req, res);
+      } catch (err) {
+        next(err);
+      }
     }
-  });
+  );
 
   router.get(
     "/me",
