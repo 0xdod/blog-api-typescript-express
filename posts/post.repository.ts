@@ -10,8 +10,8 @@ export class PostRepository {
     });
   }
 
-  findAll() {
-    return this.prisma.post.findMany();
+  findAll(params: any) {
+    return this.prisma.post.findMany(params);
   }
 
   findOne(params: any) {
@@ -31,5 +31,9 @@ export class PostRepository {
     return this.prisma.post.delete({
       where: params,
     });
+  }
+
+  count(params = {}) {
+    return this.prisma.post.count(params);
   }
 }

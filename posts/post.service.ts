@@ -1,4 +1,5 @@
 import { HttpError } from "../utils/errors/base-http.error";
+import { Page, PageQueryWithSearch } from "../utils/page/page-query";
 import { slugify } from "../utils/strings/slugify";
 import { CreatePost } from "./interfaces/create-post.interface";
 import { EditPost } from "./interfaces/edit-post.interface";
@@ -19,9 +20,33 @@ export class PostService {
     return createdPost;
   }
 
-  async getAll() {
-    const posts = await this.postRepository.findAll();
-    return posts;
+  async getAll(pageQuery: PageQueryWithSearch) {
+    const { skip, limit, searchTerm } = pageQuery;
+    const where = searchTerm
+      ? {
+          OR: [
+            {
+              title: {
+                contains: searchTerm,
+                mode: "insensitive",
+              },
+            },
+            {
+              content: {
+                contains: searchTerm,
+                mode: "insensitive",
+              },
+            },
+          ],
+        }
+      : undefined;
+    const posts = await this.postRepository.findAll({
+      skip,
+      take: limit,
+      where,
+    });
+    const count = await this.postRepository.count({ where });
+    return Page.from(posts, count, pageQuery);
   }
 
   async getOne(slug: string) {

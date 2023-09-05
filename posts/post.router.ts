@@ -8,6 +8,7 @@ import { validateSchema } from "../utils/validator/validate";
 import { createPostSchema } from "./schema/create-post.schema";
 import passport from "passport";
 import { editPostSchema } from "./schema/edit-post.schema";
+import { getPostListSchema } from "./schema/get-post.schema";
 
 export default (prisma: PrismaClient) => {
   const router = Router();
@@ -26,13 +27,17 @@ export default (prisma: PrismaClient) => {
     }
   });
 
-  router.get("/", async (req, res, next) => {
-    try {
-      await postController.getAll(req, res);
-    } catch (err) {
-      next(err);
+  router.get(
+    "/",
+    validateSchema(getPostListSchema, "query"),
+    async (req, res, next) => {
+      try {
+        await postController.getAll(req, res);
+      } catch (err) {
+        next(err);
+      }
     }
-  });
+  );
 
   router.get("/:slug", async (req, res, next) => {
     try {

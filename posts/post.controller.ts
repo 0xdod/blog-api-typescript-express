@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { PostService } from "./post.service";
+import { PageQueryWithSearch } from "../utils/page/page-query";
 
 export class PostController {
   constructor(private readonly postService: PostService) {}
@@ -10,7 +11,8 @@ export class PostController {
   }
 
   async getAll(req: Request, res: Response) {
-    const posts = await this.postService.getAll();
+    const pageQuery = PageQueryWithSearch.fromQuery(req.query);
+    const posts = await this.postService.getAll(pageQuery);
     res.json(posts);
   }
 
