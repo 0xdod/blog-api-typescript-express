@@ -7,6 +7,7 @@ import { PostController } from "./post.controller";
 import { validateSchema } from "../utils/validator/validate";
 import { createPostSchema } from "./schema/create-post.schema";
 import passport from "passport";
+import { editPostSchema } from "./schema/edit-post.schema";
 
 export default (prisma: PrismaClient) => {
   const router = Router();
@@ -20,6 +21,42 @@ export default (prisma: PrismaClient) => {
   router.post("/", validateSchema(createPostSchema), async (req, res, next) => {
     try {
       await postController.create(req, res);
+    } catch (err) {
+      next(err);
+    }
+  });
+
+  router.get("/", async (req, res, next) => {
+    try {
+      await postController.getAll(req, res);
+    } catch (err) {
+      next(err);
+    }
+  });
+
+  router.get("/:slug", async (req, res, next) => {
+    try {
+      await postController.getOne(req, res);
+    } catch (err) {
+      next(err);
+    }
+  });
+
+  router.patch(
+    "/:slug",
+    validateSchema(editPostSchema),
+    async (req, res, next) => {
+      try {
+        await postController.edit(req, res);
+      } catch (err) {
+        next(err);
+      }
+    }
+  );
+
+  router.delete("/:id", async (req, res, next) => {
+    try {
+      await postController.delete(req, res);
     } catch (err) {
       next(err);
     }

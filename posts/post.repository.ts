@@ -9,4 +9,27 @@ export class PostRepository {
       data: createPostDto,
     });
   }
+
+  findAll() {
+    return this.prisma.post.findMany();
+  }
+
+  findOne(params: any) {
+    return this.prisma.post.findFirst({
+      where: params,
+    });
+  }
+
+  update(params: any, data: any) {
+    return this.prisma.post.update({
+      where: params,
+      data,
+    });
+  }
+
+  delete(params: any) {
+    return this.prisma.post.delete({
+      where: params,
+    });
+  }
 }
