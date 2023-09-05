@@ -4,10 +4,18 @@ import { AuthService } from "./auth.service";
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  async login(req: Request, res: Response) {}
+  async login(req: Request, res: Response) {
+    const result = await this.authService.login(req.body);
+    res.json(result);
+  }
 
   async signUp(req: Request, res: Response) {
     const result = await this.authService.signUp(req.body);
+    res.json(result);
+  }
+
+  async authUser(req: Request & { user: { id?: string } }, res: Response) {
+    const result = await this.authService.authUser(req.user?.id as string);
     res.json(result);
   }
 }

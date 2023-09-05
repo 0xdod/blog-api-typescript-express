@@ -7,6 +7,19 @@ export class UserService {
   }
 
   async create(createUser: CreateUserDto) {
-    return this.userRepository.create(createUser);
+    const createdUser = await this.userRepository.create(createUser);
+    return { ...createdUser, password: undefined };
+  }
+
+  async findByUsername(username: string) {
+    return this.userRepository.findOne({ username });
+  }
+
+  async findByEmail(email: string) {
+    return this.userRepository.findOne({ email });
+  }
+
+  async findOne(id: string) {
+    return this.userRepository.findOne({ id });
   }
 }
