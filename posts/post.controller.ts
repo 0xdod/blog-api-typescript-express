@@ -1,6 +1,6 @@
-import { NextFunction, Request, Response } from "express";
+import { Request, Response } from "express";
 import { PostService } from "./post.service";
-import { PageQueryWithSearch } from "../utils/page/page-query";
+import { PostPageQuery } from "./dto/post-page-query.dto";
 
 export class PostController {
   constructor(private readonly postService: PostService) {}
@@ -11,23 +11,30 @@ export class PostController {
   }
 
   async getAll(req: Request, res: Response) {
-    const pageQuery = PageQueryWithSearch.fromQuery(req.query);
+    const pageQuery = PostPageQuery.fromQuery(req.query);
     const posts = await this.postService.getAll(pageQuery);
     res.json(posts);
   }
 
   async getOne(req: Request, res: Response) {
-    const post = await this.postService.getOne(req.params.slug);
+    const post = await this.postService.getOne(req.params.slugOrId);
     res.json(post);
   }
 
   async edit(req: Request, res: Response) {
-    const post = await this.postService.edit(req.user?.id!, req.body);
+    const post = await this.postService.edit(
+      req.user?.id!,
+      req.params.slugOrId,
+      req.body
+    );
     res.json(post);
   }
 
   async delete(req: Request, res: Response) {
-    const post = await this.postService.delete(req.user?.id!, req.params.id);
+    const post = await this.postService.delete(
+      req.user?.id!,
+      req.params.slugOrId
+    );
     res.json(post);
   }
 }

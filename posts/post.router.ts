@@ -39,7 +39,7 @@ export default (prisma: PrismaClient) => {
     }
   );
 
-  router.get("/:slug", async (req, res, next) => {
+  router.get("/:slugOrId", async (req, res, next) => {
     try {
       await postController.getOne(req, res);
     } catch (err) {
@@ -48,7 +48,7 @@ export default (prisma: PrismaClient) => {
   });
 
   router.patch(
-    "/:slug",
+    "/:slugOrId",
     validateSchema(editPostSchema),
     async (req, res, next) => {
       try {
@@ -59,7 +59,7 @@ export default (prisma: PrismaClient) => {
     }
   );
 
-  router.delete("/:id", async (req, res, next) => {
+  router.delete("/:slugOrId", async (req, res, next) => {
     try {
       await postController.delete(req, res);
     } catch (err) {

@@ -6,10 +6,11 @@ export function validateSchema<T extends Record<string, any>>(
   source: "body" | "query" | "params" = "body"
 ) {
   return (req: Request, res: Response, next: NextFunction) => {
-    const { error } = schema.validate(req[source]);
+    const { error, value } = schema.validate(req[source]);
     if (error) {
       return res.status(400).json({ error: error.message });
     }
+    req[source] = value;
     next();
   };
 }

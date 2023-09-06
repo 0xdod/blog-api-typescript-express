@@ -11,12 +11,6 @@ interface CreateUser {
   password: string;
 }
 
-interface FindOneUser {
-  id?: string;
-  username?: string;
-  email?: string;
-}
-
 export class UserRepository {
   constructor(private readonly prisma: PrismaClient) {}
 
@@ -26,7 +20,7 @@ export class UserRepository {
     });
   }
 
-  findOne(params: FindOneUser) {
+  findOne(params: any) {
     return this.prisma.user.findFirst({
       where: params,
     });

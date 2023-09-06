@@ -16,11 +16,8 @@ export class PageQueryWithSearch extends PageQuery {
   }
 
   static fromQuery(query: any) {
-    return new PageQueryWithSearch(
-      query.page,
-      query.limit,
-      query.searchTerm || ""
-    );
+    const { page, limit, searchTerm } = query;
+    return new PageQueryWithSearch(page, limit, searchTerm);
   }
 }
 

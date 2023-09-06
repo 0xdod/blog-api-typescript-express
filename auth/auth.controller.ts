@@ -14,8 +14,8 @@ export class AuthController {
     res.json(result);
   }
 
-  async authUser(req: Request & { user: { id?: string } }, res: Response) {
-    const result = await this.authService.authUser(req.user?.id as string);
+  async authUser(req: Request, res: Response) {
+    const result = await this.authService.authUser(req.user?.id!);
     res.json(result);
   }
 }
