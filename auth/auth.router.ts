@@ -7,7 +7,7 @@ import { PrismaClient } from "@prisma/client";
 import { validateSchema } from "../utils/validator/validate";
 import { loginSchema } from "./schema/login.schema";
 import { signUpSchema } from "./schema/sign-up.schema";
-import passport, { configurePassport } from "./utils/passport";
+import passport, { authenticate, configurePassport } from "./utils/passport";
 
 export default (app: Express, prisma: PrismaClient) => {
   const router = Router();
@@ -40,17 +40,13 @@ export default (app: Express, prisma: PrismaClient) => {
     }
   );
 
-  router.get(
-    "/user",
-    passport.authenticate("jwt", { session: false }),
-    async (req, res, next) => {
-      try {
-        await authController.authUser(req as any, res);
-      } catch (err) {
-        next(err);
-      }
+  router.get("/user", authenticate, async (req, res, next) => {
+    try {
+      await authController.authUser(req as any, res);
+    } catch (err) {
+      next(err);
     }
-  );
+  });
 
   return router;
 };

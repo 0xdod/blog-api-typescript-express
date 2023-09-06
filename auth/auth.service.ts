@@ -2,9 +2,6 @@ import { UserService } from "../users/user.service";
 import { HttpError } from "../utils/errors/base-http.error";
 import { comparePassword, hashPassword } from "../utils/strings/hash";
 import jwt from "jsonwebtoken";
-import loadConfig from "../config";
-
-const config = loadConfig();
 
 export class AuthService {
   constructor(private readonly userService: UserService) {}
@@ -61,8 +58,12 @@ export class AuthService {
   }
 
   private generateToken(user: { username: string; id: string }): string {
-    return jwt.sign({ id: user.id, sub: user.username }, config.jwtSecret, {
-      expiresIn: "1h",
-    });
+    return jwt.sign(
+      { id: user.id, sub: user.username },
+      process.env.JWT_SECRET!,
+      {
+        expiresIn: "1h",
+      }
+    );
   }
 }

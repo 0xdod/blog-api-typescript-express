@@ -2,6 +2,8 @@ import passport from "passport";
 import { Strategy, ExtractJwt } from "passport-jwt";
 
 import { UserService } from "../../users/user.service";
+import { NextFunction, Request, Response } from "express";
+import { HttpError } from "../../utils/errors/base-http.error";
 
 // Configure Passport with JWT Strategy
 export function configurePassport(
@@ -28,5 +30,21 @@ export function configurePassport(
     )
   );
 }
+
+export const authenticate = (req: Request, res: Response, next: NextFunction) =>
+  passport.authenticate(
+    "jwt",
+    (err: any, user: any, info: any, status: any) => {
+      if (err) {
+        console.error(err.stack);
+        return next(err);
+      }
+      if (!user) {
+        return next(new HttpError("Unauthorized", 401));
+      }
+      req.user = user;
+      next();
+    }
+  )(req, res, next);
 
 export default passport;

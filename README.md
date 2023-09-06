@@ -106,6 +106,7 @@ Sample Response
 ### Login
 
 `POST /v1/auth/login`
+
 Sample Request
 
 ```json
@@ -130,9 +131,14 @@ Sample Response
 }
 ```
 
+The "accessToken" should be sent as the Bearer Token in the "Authorization" header for requests that require Auth
+
 ### Create a post
 
 `POST /v1/posts`
+
+Authentication Required: Bearer Token
+
 Sample Request
 
 ```json
@@ -160,8 +166,9 @@ Sample Response
 
 ### Get a post by slug or id
 
-`GET /v1/posts/:slugOrId`
-Replace ":slugOrId" with a valid slug or id.
+`GET /v1/posts/:slugOrId` (Replace ":slugOrId" with a valid slug or id.)
+
+Authentication Required: Bearer Token
 
 Sample Response
 
@@ -181,8 +188,11 @@ Sample Response
 ### Get posts
 
 `GET /v1/posts/?[page=1][&limit=10][&published=true][&searchTerm=wahala]`
+
 Fetch all posts, returns paginated data, can also be searched by title or content via url query params &
 can also filter by published content.
+
+Authentication Required: Bearer Token
 
 Sample Response
 
@@ -221,8 +231,9 @@ Sample Response
 
 ### Edit a post by slug or id
 
-`PATCH /v1/posts/:slugOrId`
-Replace ":slugOrId" with a valid slug or id.
+`PATCH /v1/posts/:slugOrId` (Replace ":slugOrId" with a valid slug or id.)
+
+Authentication Required: Bearer Token
 
 Sample Request
 
@@ -251,7 +262,6 @@ Sample Response
 
 ### Delete a post by slug or id
 
-`DELETE /v1/posts/:slugOrId`
-Replace ":slugOrId" with a valid slug or id.
+`DELETE /v1/posts/:slugOrId` (Replace ":slugOrId" with a valid slug or id.)
 
-Removes post from the database
+Authentication Required: Bearer Token

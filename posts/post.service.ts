@@ -11,11 +11,12 @@ export class PostService {
 
   async create(userId: string, createPostDto: CreatePost) {
     const { title, content, published } = createPostDto;
+    console.log(userId);
     const createdPost = await this.postRepository.create({
       title,
       content,
       published,
-      slug: slugify(title + "-" + userId),
+      slug: await this.createUniqueSlug(title, userId),
       authorId: userId,
     });
     return createdPost;
@@ -70,7 +71,9 @@ export class PostService {
     if (post.authorId !== userId) throw new HttpError("Forbidden", 403);
     if (title) {
       post.title = title;
-      post.slug = !post.published ? slugify(title + "-" + userId) : post.slug;
+      post.slug = !post.published
+        ? await this.createUniqueSlug(title, userId)
+        : post.slug;
     }
     if (content) post.content = content;
     if (published) post.published = published;
@@ -88,5 +91,15 @@ export class PostService {
     if (post.authorId !== userId) throw new HttpError("Forbidden", 403);
     await this.postRepository.delete({ id: post.id });
     return post;
+  }
+
+  private async createUniqueSlug(title: string, userId: string) {
+    let slug = slugify(
+      title + "-" + Date.now().toString(36) + userId.slice(-10)
+    );
+    while (await this.postRepository.findOne({ slug })) {
+      slug = slugify(title + "-" + Date.now().toString(36) + userId.slice(-10));
+    }
+    return slug;
   }
 }
